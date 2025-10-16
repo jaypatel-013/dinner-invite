@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Dinner as BoosbabycakeS</title>
+  <style>
+    :root{
+      --bg:#0f0b0a;
+      --card:#1a1211;
+      --accent:#b71c1c;
+      --accent-2:#d84315;
+      --muted:#cfc3be;
+      --glass: rgba(255,255,255,0.04);
+      font-family: "Helvetica Neue", Arial, sans-serif;
+    }
+    html,body{height:100%;margin:0;background:linear-gradient(180deg,#0b0706 0%, #24110f 60%); color:var(--muted);}
+    .wrap{
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:28px;
+      box-sizing:border-box;
+    }
+    .card{
+      width:100%;
+      max-width:760px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.15));
+      border-radius:16px;
+      overflow:hidden;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+      display:grid;
+      grid-template-columns: 1fr 420px;
+      gap:0;
+    }
+    .left{
+      padding:32px;
+      background-image: url('https://images.unsplash.com/photo-1541558611184-7137d3a7b3a5?q=80&w=1200&auto=format&fit=crop&ixlib=rb-4.0.3&s=3e8f5f0a7bf7a38b4a3f6d5c9a7f1d0a');
+      background-size:cover;
+      background-position:center;
+      position:relative;
+      color:#fff;
+    }
+    .overlay{
+      position:absolute; inset:0; background:linear-gradient(180deg, rgba(10,6,6,0.2), rgba(8,4,4,0.5));
+      mix-blend-mode:multiply;
+    }
+    .left-inner{
+      position:relative; z-index:2;
+      display:flex;flex-direction:column;height:100%;justify-content:flex-end;
+    }
+    h1{
+      margin:0 0 8px 0; font-size:28px; letter-spacing:0.6px;
+      color:#fff;
+    }
+    p.lead{ margin:0 0 18px 0; font-size:15px; color: #f7eaea;}
+    .candles{
+      display:flex; gap:8px; margin-top:8px; align-items:center;
+    }
+    .cta{
+      margin-top:14px;
+      display:inline-block;
+      background:linear-gradient(90deg,var(--accent),var(--accent-2));
+      padding:10px 16px;
+      border-radius:10px;
+      color:#fff;
+      text-decoration:none;
+      font-weight:600;
+      box-shadow: 0 6px 20px rgba(183,28,28,0.28);
+    }
+
+    .right{
+      padding:30px;
+      background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.04));
+      color:var(--muted);
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+      align-items:stretch;
+      justify-content:center;
+    }
+    label {font-size:13px; display:block; margin-bottom:6px; color:#f3e6e6;}
+    .date-grid{display:flex; gap:8px; flex-wrap:wrap;}
+    .date-btn{
+      background:var(--glass);
+      border:1px solid rgba(255,255,255,0.05);
+      color:var(--muted);
+      padding:10px 12px; border-radius:10px; cursor:pointer;
+      transition: all .18s ease; font-weight:600;
+    }
+    .date-btn.selected{ background: linear-gradient(90deg,var(--accent),var(--accent-2)); color:white; transform:translateY(-4px); box-shadow: 0 8px 22px rgba(216,67,21,0.18);}
+    .small{ font-size:13px; color:#e9d9d9;}
+
+    .dress-grid{display:flex; gap:8px; flex-wrap:wrap;}
+    .dress-btn{
+      padding:8px 10px;border-radius:10px; background:transparent;border:1px solid rgba(255,255,255,0.06);
+      cursor:pointer; font-weight:600; color:var(--muted);
+    }
+    .dress-btn.selected{ background: rgba(255,255,255,0.06); border-color:rgba(255,255,255,0.12); transform:translateY(-3px); }
+
+    .actions{ display:flex; gap:8px; margin-top:12px; }
+    .btn{
+      padding:10px 14px; border-radius:10px; cursor:pointer; border:none; font-weight:700;
+    }
+    .btn-primary{ background:linear-gradient(90deg,var(--accent),var(--accent-2)); color:#fff; box-shadow: 0 8px 24px rgba(183,28,28,0.18); }
+    .btn-ghost{ background:transparent; color:var(--muted); border:1px solid rgba(255,255,255,0.04); }
+
+    .muted{ color:#d7cfcf; font-size:13px;}
+    .small-note{ font-size:12px; color:#c9bcbc; margin-top:6px; }
+
+    .hidden{ display:none; }
+
+    .response-area{ margin-top:8px; display:flex; flex-direction:column; gap:8px;}
+    textarea{ width:100%; min-height:90px; padding:10px; border-radius:8px; border:1px solid rgba(255,255,255,0.04); background:transparent; color:var(--muted); resize:vertical; font-size:14px; }
+
+    .center{ text-align:center; }
+    footer{ font-size:12px; color:#bfb0b0; text-align:center; margin-top:6px; }
+
+    /* mobile */
+    @media (max-width:840px){
+      .card{ grid-template-columns: 1fr; }
+      .left{ min-height:220px; }
+    }
+
+    /* success toast */
+    .toast{
+      position:fixed; right:20px; bottom:20px; background: #0f0b0a; padding:12px 16px; border-radius:10px; box-shadow:0 8px 30px rgba(0,0,0,0.6); color:#f7e7e7; display:none;
+    }
+    .toast.show{ display:block; animation:pop .3s ease; }
+    @keyframes pop{ from{ transform:translateY(12px); opacity:0 } to{ transform:translateY(0); opacity:1 } }
+
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card" role="main" aria-labelledby="title">
+      <div class="left" aria-hidden="false">
+        <div class="overlay"></div>
+        <div class="left-inner">
+          <div>
+            <h1 id="title">Dinner as BoosbabycakeS</h1>
+            <p class="lead">I’d love to share an evening with you — choose the night that feels right. Candlelight, good wine, and you.</p>
+            <div class="candles">
+              <div style="font-weight:700; color:#ffeaea">Oct 31 • Nov 1 • Nov 2 • Nov 3</div>
+            </div>
+            <div style="margin-top:14px;">
+              <a class="cta" href="#rsvp" onclick="document.getElementById('rsvp').scrollIntoView({behavior:'smooth'})">Pick a night</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="right" id="rsvp" aria-live="polite">
+        <div>
+          <div style="display:flex; align-items:center; justify-content:space-between;">
+            <div>
+              <div class="small">Hosted by</div>
+              <div style="font-weight:800; font-size:18px; margin-top:4px;">Jay (BoosbabycakeS)</div>
+            </div>
+            <div class="small" style="text-align:right">
+              <div>Location</div>
+              <div style="font-weight:700; margin-top:6px;">482 Lord Street</div>
+            </div>
+          </div>
+
+          <hr style="margin:14px 0; border:0; border-top:1px solid rgba(255,255,255,0.04)">
+
+          <div>
+            <label class="small">Would you like to join me for dinner?</label>
+            <div style="display:flex; gap:8px; margin-top:8px;">
+              <button class="date-btn" id="yesBtn">Yes, I'd love to</button>
+              <button class="date-btn" id="noBtn">No, I can't</button>
+            </div>
+          </div>
+
+          <!-- YES flow -->
+          <div id="yesFlow" class="hidden">
+            <div style="margin-top:12px;">
+              <label class="small">Pick a date</label>
+              <div class="date-grid" aria-label="date options">
+                <button class="date-btn" data-date="2025-10-31">Oct 31</button>
+                <button class="date-btn" data-date="2025-11-01">Nov 1</button>
+                <button class="date-btn" data-date="2025-11-02">Nov 2</button>
+                <button class="date-btn" data-date="2025-11-03">Nov 3</button>
+              </div>
+            </div>
+
+            <div id="dressSection" class="hidden">
+              <div style="margin-top:12px;">
+                <label class="small">Pick a dress code</label>
+                <div class="dress-grid">
+                  <button class="dress-btn" data-dress="Casual">Casual</button>
+                  <button class="dress-btn" data-dress="Formal">Formal</button>
+                  <button class="dress-btn" data-dress="Beach wear">Beach wear</button>
+                  <button class="dress-btn" data-dress="Your choice">Your choice</button>
+                </div>
+                <div class="small-note">You can change later — just pick what feels right.</div>
+              </div>
+
+              <div class="response-area">
+                <label class="small">A short note (optional)</label>
+                <textarea id="note" placeholder="Write a short note — e.g., 'Can't wait!'"></textarea>
+                <div class="actions">
+                  <button class="btn btn-primary" id="sendYes">Confirm & Send RSVP</button>
+                  <button class="btn btn-ghost" id="resetYes">Start over</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- NO flow -->
+          <div id="noFlow" class="hidden">
+            <div style="margin-top:12px;">
+              <label class="small">Sorry to hear that — may I ask why?</label>
+              <textarea id="noReason" placeholder="It's okay to be honest — any reason"></textarea>
+              <div class="actions">
+                <button class="btn btn-primary" id="sendNo">Send response</button>
+                <button class="btn btn-ghost" id="resetNo">Start over</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Note about privacy -->
+          <div style="margin-top:12px;" class="muted small">
+            Your reply will be sent to Jay at <strong>Jaypatel013@gmail.com</strong>.
+          </div>
+
+        </div>
+
+        <footer>
+          <div>Dress code options: Casual • Formal • Beach wear • Your choice</div>
+        </footer>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <!-- EmailJS SDK -->
+  <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+  <script>
+    // ---------- CONFIGURE THIS ----------
+    // Sign up at https://www.emailjs.com (free) and create:
+    // 1) Email service (e.g., gmail) -> note SERVICE_ID
+    // 2) Email template -> note TEMPLATE_ID
+    // 3) Get your USER_ID (public key)
+    //
+    // Replace the three placeholder strings below with your real EmailJS values.
+    const EMAILJS_SERVICE_ID = "YOUR_EMAILJS_SERVICE_ID";
+    const EMAILJS_TEMPLATE_ID = "YOUR_EMAILJS_TEMPLATE_ID";
+    const EMAILJS_USER_ID = "YOUR_EMAILJS_USER_ID"; // also called public key
+    // ------------------------------------
+
+    // initialize EmailJS (if user filled above)
+    if (EMAILJS_USER_ID && EMAILJS_USER_ID !== "YOUR_EMAILJS_USER_ID") {
+      emailjs.init(EMAILJS_USER_ID);
+    }
+
+    // UI logic
+    const yesBtn = document.getElementById('yesBtn');
+    const noBtn = document.getElementById('noBtn');
+    const yesFlow = document.getElementById('yesFlow');
+    const noFlow = document.getElementById('noFlow');
+    const dateButtons = document.querySelectorAll('.date-grid .date-btn');
+    const dressButtons = document.querySelectorAll('.dress-grid .dress-btn');
+    const dressSection = document.getElementById('dressSection');
+    const sendYes = document.getElementById('sendYes');
+    const sendNo = document.getElementById('sendNo');
+    const note = document.getElementById('note');
+    const noReason = document.getElementById('noReason');
+    const resetYes = document.getElementById('resetYes');
+    const resetNo = document.getElementById('resetNo');
+    const toast = document.getElementById('toast');
+
+    let selectedDate = null;
+    let selectedDress = null;
+
+    function clearSelected(nodeList){
+      nodeList.forEach(n => n.classList.remove('selected'));
+    }
+    function showToast(msg){
+      toast.innerText = msg;
+      toast.classList.add('show');
+      setTimeout(()=> toast.classList.remove('show'), 4200);
+    }
+
+    yesBtn.addEventListener('click', () => {
+      yesFlow.classList.remove('hidden');
+      noFlow.classList.add('hidden');
+      yesBtn.classList.add('selected');
+      noBtn.classList.remove('selected');
+      document.getElementById('rsvp').scrollIntoView({behavior:'smooth'});
+    });
+
+    noBtn.addEventListener('click', () => {
+      noFlow.classList.remove('hidden');
+      yesFlow.classList.add('hidden');
+      noBtn.classList.add('selected');
+      yesBtn.classList.remove('selected');
+      document.getElementById('rsvp').scrollIntoView({behavior:'smooth'});
+    });
+
+    dateButtons.forEach(btn=>{
+      btn.addEventListener('click', () => {
+        clearSelected(dateButtons);
+        btn.classList.add('selected');
+        selectedDate = btn.dataset.date;
+        dressSection.classList.remove('hidden');
+        // reveal default dress options
+        document.querySelector('#dressSection').scrollIntoView({behavior:'smooth'});
+      });
+    });
+
+    dressButtons.forEach(btn=>{
+      btn.addEventListener('click', () => {
+        clearSelected(dressButtons);
+        btn.classList.add('selected');
+        selectedDress = btn.dataset.dress;
+      });
+    });
+
+    resetYes.addEventListener('click', () => {
+      yesFlow.classList.add('hidden');
+      clearSelected(dateButtons);
+      clearSelected(dressButtons);
+      selectedDate = null;
+      selectedDress = null;
+      note.value = '';
+      yesBtn.classList.remove('selected');
+    });
+    resetNo.addEventListener('click', () => {
+      noFlow.classList.add('hidden');
+      noReason.value = '';
+      noBtn.classList.remove('selected');
+    });
+
+    // Build email payload and send (via EmailJS if configured; otherwise fallback to mailto)
+    function sendEmail(payload){
+      // If EmailJS is configured, use it
+      if (EMAILJS_USER_ID && EMAILJS_USER_ID !== "YOUR_EMAILJS_USER_ID"
+          && EMAILJS_SERVICE_ID && EMAILJS_TEMPLATE_ID
+          && EMAILJS_SERVICE_ID !== "YOUR_EMAILJS_SERVICE_ID"
+          && EMAILJS_TEMPLATE_ID !== "YOUR_EMAILJS_TEMPLATE_ID") {
+        // prepare template params (match your template keys)
+        const templateParams = {
+          from_name: payload.from_name || "Guest",
+          to_email: "Jaypatel013@gmail.com",
+          subject: payload.subject,
+          message: payload.message,
+          selected_date: payload.selected_date || "",
+          dress_code: payload.dress_code || "",
+          response_type: payload.response_type || ""
+        };
+        emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
+          .then(function(response) {
+            showToast('RSVP sent — Jay will get your response by email.');
+            // optionally show confirmation text on page
+            afterSendSuccess();
+          }, function(error) {
+            console.error('EmailJS error:', error);
+            showToast('Could not send automatically — opening your email app instead.');
+            openMailClientFallback(payload);
+          });
+      } else {
+        // fallback: open user's email client
+        openMailClientFallback(payload);
+      }
+    }
+
+    function openMailClientFallback(payload){
+      const mailTo = buildMailto(payload);
+      window.location.href = mailTo;
+    }
+
+    function buildMailto(payload){
+      const to = encodeURIComponent("Jaypatel013@gmail.com");
+      const subject = encodeURIComponent(payload.subject);
+      let body = `Response from: ${payload.from_name || 'Guest'}%0D%0A%0D%0A`;
+      if (payload.response_type) body += `Response: ${payload.response_type}%0D%0A`;
+      if (payload.selected_date) body += `Selected date: ${payload.selected_date}%0D%0A`;
+      if (payload.dress_code) body += `Dress code: ${payload.dress_code}%0D%0A`;
+      if (payload.message) body += `%0D%0ANote:%0D%0A${payload.message}%0D%0A`;
+      body += `%0D%0A---%0D%0AInvitation: Dinner as BoosbabycakeS at 482 Lord Street`;
+      return `mailto:${to}?subject=${subject}&body=${body}`;
+    }
+
+    function afterSendSuccess(){
+      // Show a small in-page confirmation and disable action buttons
+      document.querySelectorAll('button').forEach(b=>b.disabled=false);
+      // replace UI with confirmation
+      const right = document.querySelector('.right');
+      right.innerHTML = `
+        <div class="center">
+          <h2 style="color:#fff">Thank you ♥</h2>
+          <p style="color:#f0e7e7">Your RSVP has been sent to Jay. He will reach out with details shortly.</p>
+          <p style="margin-top:12px; color:#d9c9c9"><strong>Location:</strong> 482 Lord Street</p>
+        </div>
+      `;
+    }
+
+    // Send YES action
+    sendYes.addEventListener('click', () => {
+      if (!selectedDate) { showToast('Please choose a date.'); return; }
+      if (!selectedDress) { showToast('Please choose a dress code.'); return; }
+      const payload = {
+        from_name: 'Her', // the guest—this is anonymous unless she enters a name; we keep it simple
+        subject: `RSVP: Yes — Dinner as BoosbabycakeS`,
+        message: note.value.trim(),
+        selected_date: selectedDate,
+        dress_code: selectedDress,
+        response_type: 'Yes'
+      };
+      // disable to prevent double clicks
+      sendYes.disabled = true;
+      sendEmail(payload);
+    });
+
+    // Send NO action
+    sendNo.addEventListener('click', () => {
+      const reason = noReason.value.trim();
+      const payload = {
+        from_name: 'Her',
+        subject: `RSVP: No — Dinner as BoosbabycakeS`,
+        message: reason || '(No reason provided)',
+        selected_date: '',
+        dress_code: '',
+        response_type: 'No'
+      };
+      sendNo.disabled = true;
+      sendEmail(payload);
+    });
+
+    // small accessibility: allow pressing enter to submit when textarea not focused is not ideal—so no auto-binding
+
+    // polite note: prevent accidental selection changes by toggling disabled only when sending
+  </script>
+
+  <script>
+    // Quick demo-friendly minor safeguard: If EmailJS placeholders not replaced, show small console message.
+    if (EMAILJS_USER_ID === "YOUR_EMAILJS_USER_ID") {
+      console.info("EmailJS not configured. To enable automatic email delivery, set your EmailJS SERVICE_ID, TEMPLATE_ID and USER_ID in the invite HTML.");
+    }
+  </script>
+</body>
+</html>
