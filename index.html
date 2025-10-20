@@ -139,8 +139,8 @@
         <div class="overlay"></div>
         <div class="left-inner">
           <div>
-            <h1 id="title">Dinner as BoosbabycakeS</h1>
-            <p class="lead">I’d love to share an evening with you — choose the night that feels right. Candlelight, good wine, and you.</p>
+            <h1 id="title">Dinner with BoosbabycakeS</h1>
+            <p class="lead">I’d love to share an evening with you — choose the night that feels right. Candlelight, good wine, and YOU.</p>
             <div class="candles">
               <div style="font-weight:700; color:#ffeaea">Oct 31 • Nov 1 • Nov 2 • Nov 3</div>
             </div>
@@ -150,13 +150,13 @@
           </div>
         </div>
       </div>
-
+ß
       <div class="right" id="rsvp" aria-live="polite">
         <div>
           <div style="display:flex; align-items:center; justify-content:space-between;">
             <div>
               <div class="small">Hosted by</div>
-              <div style="font-weight:800; font-size:18px; margin-top:4px;">Jay (BoosbabycakeS)</div>
+              <div style="font-weight:800; font-size:18px; margin-top:4px;">Boosbaby</div>
             </div>
             <div class="small" style="text-align:right">
               <div>Location</div>
@@ -186,21 +186,43 @@
               </div>
             </div>
 
+            <div id="control-choice" style="display:none; text-align:center; margin-top:20px;">
+              <h3>Would you like to decide what to wear, or let me choose for you?</h3>
+              <button onclick="chooseOwn()">I’ll decide myself</button>
+              <button onclick="letMeChoose()">You tell me 😏</button>
+            </div>
+
+            <script>
+            function showControlChoice() {
+              document.getElementById('control-choice').style.display = 'block';
+            }
+
+            function chooseOwn() {
+              document.getElementById('control-choice').style.display = 'none';
+              document.getElementById('dress-code').style.display = 'block';
+            }
+
+            function letMeChoose() {
+              document.getElementById('control-choice').innerHTML = "<p>Mmm… I'll pick something perfect for you 😌</p>";
+            }
+            </script>
+
+
             <div id="dressSection" class="hidden">
               <div style="margin-top:12px;">
                 <label class="small">Pick a dress code</label>
                 <div class="dress-grid">
                   <button class="dress-btn" data-dress="Casual">Casual</button>
                   <button class="dress-btn" data-dress="Formal">Formal</button>
-                  <button class="dress-btn" data-dress="Beach wear">Beach wear</button>
+                  <button class="dress-btn" data-dress="Gym wear">Gym wear</button>
                   <button class="dress-btn" data-dress="Your choice">Your choice</button>
                 </div>
                 <div class="small-note">You can change later — just pick what feels right.</div>
               </div>
 
               <div class="response-area">
-                <label class="small">A short note (optional)</label>
-                <textarea id="note" placeholder="Write a short note — e.g., 'Can't wait!'"></textarea>
+                <label class="small">Any suggestions please</label>
+                <textarea id="note" placeholder="Write it here"></textarea>
                 <div class="actions">
                   <button class="btn btn-primary" id="sendYes">Confirm & Send RSVP</button>
                   <button class="btn btn-ghost" id="resetYes">Start over</button>
@@ -213,7 +235,7 @@
           <div id="noFlow" class="hidden">
             <div style="margin-top:12px;">
               <label class="small">Sorry to hear that — may I ask why?</label>
-              <textarea id="noReason" placeholder="It's okay to be honest — any reason"></textarea>
+              <textarea id="noReason" placeholder="Any reason?"></textarea>
               <div class="actions">
                 <button class="btn btn-primary" id="sendNo">Send response</button>
                 <button class="btn btn-ghost" id="resetNo">Start over</button>
@@ -229,13 +251,45 @@
         </div>
 
         <footer>
-          <div>Dress code options: Casual • Formal • Beach wear • Your choice</div>
+          <div>Dress code options: Casual • Formal • Gym wear • Your choice</div>
         </footer>
       </div>
     </div>
   </div>
 
   <div class="toast" id="toast"></div>
+  <!-- Simple Formspree RSVP Form -->
+  <form id="rsvpForm" action="https://formspree.io/f/mkgqaopk" method="POST" style="margin-top:20px;">
+    <label for="name">Your name</label>
+    <input type="text" id="name" name="name" required style="width:100%;padding:8px;margin:6px 0;border-radius:6px;border:1px solid #444;background:#1a1211;color:#fff;">
+    
+    <label for="email">Your email</label>
+    <input type="email" id="email" name="email" required style="width:100%;padding:8px;margin:6px 0;border-radius:6px;border:1px solid #444;background:#1a1211;color:#fff;">
+    
+    <label for="message">Your RSVP message</label>
+    <textarea id="message" name="message" placeholder="Yes, no, or a short note..." style="width:100%;padding:8px;margin:6px 0;border-radius:6px;border:1px solid #444;background:#1a1211;color:#fff;"></textarea>
+
+    <button type="submit" style="background:linear-gradient(90deg,#b71c1c,#d84315);color:#fff;border:none;padding:10px 16px;border-radius:10px;cursor:pointer;">Send RSVP</button>
+  </form>
+
+  <script>
+  const form = document.getElementById('rsvpForm');
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const response = await fetch(form.action, {
+      method: 'POST',
+      body: new FormData(form),
+      headers: { 'Accept': 'application/json' }
+    });
+    if (response.ok) {
+      alert('Thank you! Your RSVP has been sent.');
+      form.reset();
+    } else {
+      alert('Oops! There was a problem submitting your form.');
+    }
+  });
+  </script>
+
 
   <!-- EmailJS SDK -->
   <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
